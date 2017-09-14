@@ -11,8 +11,8 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
-    
     var userIsInTheMiddleOfTyping = false
+    private var brain: CalculatorBrain = CalculatorBrain()
     
     @IBAction func touchDigit(_ sender: UIButton) {
         // underbar: not external touchDigig(someButton). Not used for 2-> n argument, only (ocasionally) for the first
@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         }
     }
 
-    // Double: type
+    // Double: type√
     // two names: 1st: external (used by the caller. Mandatory for the caller.)
     // 2nd: internal (inside of this method)
     func drawHorizontalLine(from startX: Double, to endX: Double, using color: UIColor) -> String {
@@ -44,19 +44,17 @@ class ViewController: UIViewController {
     }
     
     @IBAction func performOperation(_ sender: UIButton) {
-        userIsInTheMiddleOfTyping = false
-        if let matemeticalSymbol = sender.currentTitle {
-            switch matemeticalSymbol {
-            case "π":
-                // conversion:
-                displayValue = Double.pi
-            case "√":
-                // square root:
-                displayValue = sqrt(displayValue)
-            default:
-                break
-            }
+        if userIsInTheMiddleOfTyping {
+            brain.setOperand(displayValue)
+            userIsInTheMiddleOfTyping = false
         }
+        if let mathematicalSymbol = sender.currentTitle {
+            brain.performOperation(mathematicalSymbol)
+        }
+        if let result = brain.result {
+            displayValue = result
+        }
+        
     }
     
 }
